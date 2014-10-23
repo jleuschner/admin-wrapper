@@ -6,27 +6,52 @@ block content
 
   .container-fluid
     .col-md-4
+      form(role='form')
+        .form-group
+          label(for='inp_hostname') Hostname
+          .input-group
+            input#inp_hostname.form-control(type='text')
+            span.input-group-btn
+              button#btn_search.btn.btn-primary(type='button') Suche
+
       ul#out.list-group(style='height:300px;overflow:auto')
+        img.spinner(src='/images/ajax-loader.gif')
 
   script.
     $(document).ready(function () {
       $.ajaxSetup({ cache: false });
-    
-      $.getJSON( "/ad/adcomputer", {'hostname' : 'pc458*' }, function( data ) {
-      if (data.err) {
-        alert(data.err)
-        $(location).attr("href","/login")
-        return
-      }
-      //$('#out').text(data)
-      var items = [];
-      $.each( data, function( key, val ) {
-        console.log(JSON.stringify(val))
-        items.push( "<a href='#' class='list' data-json='" + JSON.stringify(val) + "'>"
-          +"<li class='list-group-item'>"
-          + val.Name
-          + "</li></a>" );
+      $("form").submit(function(e){
+        e.preventDefault();
+        getList()
       })
-      $('#out').html(items.join(""));
-      });
+      /*
+      $('#btn_search').click( function(e) { 
+        getList() 
+        });
+      */
+      $('#inp_hostname').focus();
+      //getList();    
     });
+
+    function getList() {
+      var opt={
+        "hostname": $('#inp_hostname').val()        
+        };
+      console.log(JSON.stringify(opt))
+      $.getJSON( "/ad/adcomputer", opt, function( data ) {
+        if (data.err) {
+          alert(data.err)
+          $(location).attr("href","/login")
+          return
+        }
+        var items = [];
+        $.each( data, function( key, val ) {
+          //console.log(JSON.stringify(val))
+          items.push( "<a href='#' class='list' data-json='" + JSON.stringify(val) + "'>"
+            +"<li class='list-group-item'>"
+            + val.Name
+            + "</li></a>" );
+        })
+        $('#out').html(items.join(""));
+        });
+      }

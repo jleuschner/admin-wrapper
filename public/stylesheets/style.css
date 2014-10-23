@@ -1,8 +1,13 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
 
-a {
-  color: #00B7FF;
+.spinner {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px; /* half width of the spinner gif */
+  margin-top: -50px; /* half height of the spinner gif */
+  text-align:center;
+  z-index:1234;
+  overflow: auto;
+  width: 100px; /* width of the spinner gif */
+  height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
 }
