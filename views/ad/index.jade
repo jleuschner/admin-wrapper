@@ -14,7 +14,8 @@ block content
             span.input-group-btn
               button#btn_search.btn.btn-primary(type='button') Suche
 
-      ul#out.list-group(style='height:300px;overflow:auto')
+      #out(style='height:300px;overflow:auto')
+        ul.list-group
         img.spinner(src='/images/ajax-loader.gif')
 
   script.
@@ -22,15 +23,10 @@ block content
       $.ajaxSetup({ cache: false });
       $("form").submit(function(e){
         e.preventDefault();
+        $('#out img').show()
         getList()
       })
-      /*
-      $('#btn_search').click( function(e) { 
-        getList() 
-        });
-      */
       $('#inp_hostname').focus();
-      //getList();    
     });
 
     function getList() {
@@ -52,6 +48,7 @@ block content
             + val.Name
             + "</li></a>" );
         })
-        $('#out').html(items.join(""));
+        $('#out img').hide()
+        $('#out ul').html(items.join(""));
         });
       }
