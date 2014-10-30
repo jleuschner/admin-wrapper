@@ -17,11 +17,17 @@ router.get('/client', function (req, res) {
 
 router.get('/adcomputer', function (req, res) {
   var cmd = ".\\routes\\ps\\adcomputer.ps1";
+  var out = new Object;
   if (req.query.hostname) {
-    cmd+=" -hostname "+req.query.hostname;
+    cmd += " -hostname " + req.query.hostname + "*";
   }
-  exec("powershell.exe "+cmd, function (err, stdout, stderr) {
-    res.send(stdout);
+  exec("powershell.exe " + cmd, { maxBuffer: 400 * 1024 }, function (err, stdout, stderr) {
+    out.err = err;
+    var xout = JSON.parse(stdout);
+    out.stdout = (Array.isArray(xout) ? xout : Array(xout));
+    out.stderr = stderr;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(out);
   })
 });
 

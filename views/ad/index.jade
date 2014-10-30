@@ -10,7 +10,7 @@ block content
         .form-group
           label(for='inp_hostname') Hostname
           .input-group
-            input#inp_hostname.form-control(type='text')
+            input#inp_hostname.form-control(type='text', placeholder="Hostname",value="pc458")
             span.input-group-btn
               button#btn_search.btn.btn-primary(type='button') Suche
 
@@ -26,29 +26,34 @@ block content
         $('#out img').show()
         getList()
       })
-      $('#inp_hostname').focus();
+      $('#btn_search').click( function(){ $('form').submit() })
     });
 
     function getList() {
       var opt={
         "hostname": $('#inp_hostname').val()        
         };
-      console.log(JSON.stringify(opt))
       $.getJSON( "/ad/adcomputer", opt, function( data ) {
         if (data.err) {
           alert(data.err)
-          $(location).attr("href","/login")
           return
         }
         var items = [];
-        $.each( data, function( key, val ) {
-          //console.log(JSON.stringify(val))
-          items.push( "<a href='#' class='list' data-json='" + JSON.stringify(val) + "'>"
-            +"<li class='list-group-item'>"
-            + val.Name
-            + "</li></a>" );
-        })
+        if (data.stdout.length ) {
+          $.each( data.stdout, function( key, val ) {
+            items.push( "<a href='#' class='list' data-json='" + JSON.stringify(val) + "'>"
+              +"<li class='list-group-item'>"
+              + "<h4>" + val.Name + "</h4>"
+              + "<p>" + val.Operatingsystem + "</p>"
+              + "</li></a>" );
+          })
+        } else {
+          items.push("<li class='list-group-item list-group-item-warning'>Keine Fundstelle</li>")
+        }
         $('#out img').hide()
         $('#out ul').html(items.join(""));
+        $('.list-group-item').click( function(){
+            alert( $(this).html() )
+        })
         });
       }
